@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrierung - KochFreunde</title>
+</head>
+<body>
+    <h1>Registrierung</h1>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <div>
+            {{ form.username.label }}<br>
+            {{ form.username(size=20) }}
+        </div>
+
+        <div>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+        </div>
+
+        <div>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+        </div>
+
+        <div>
+            {{ form.confirm_password.label }}<br>
+            {{ form.confirm_password(size=32) }}
+        </div>
+
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+    <p>
+        Haben Sie bereits ein Konto? <a href="{{ url_for('login') }}">Melden Sie sich hier an</a>.
+    </p>
+</body>
+</html>

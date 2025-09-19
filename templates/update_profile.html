@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profil aktualisieren</title>
+</head>
+<body>
+    <h1>Profil aktualisieren</h1>
+
+    <img src="{{ image_file }}" alt="Profilbild von {{ current_user.username }}">
+
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }}<br>
+            {{ form.username(size=20) }}
+        </div>
+        <div>
+            {{ form.picture.label }}<br>
+            {{ form.picture }}
+        </div>
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+    
+    <a href="{{ url_for('profile') }}">Zurück zum Profil</a>
+</body>
+</html>

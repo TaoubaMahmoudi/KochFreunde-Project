@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Startseite</title>
+</head>
+<body>
+    <h1>Willkommen bei KochFreunde!</h1>
+
+    <form action="{{ url_for('list_recipes') }}" method="GET">
+        <input type="text" name="query" placeholder="Ein Rezept suchen...">
+        <button type="submit">Suchen</button>
+    </form>
+
+    <hr>
+    <h2>Nach Kategorie filtern</h2>
+    <a href="{{ url_for('list_recipes', category='sweet') }}"><button>Süß</button></a>
+    <a href="{{ url_for('list_recipes', category='savory') }}"><button>Herzhaft</button></a>
+    <a href="{{ url_for('list_recipes', category='vegetarian') }}"><button>Vegetarisch</button></a>
+
+    <hr>
+    <h2>Nach Schwierigkeitsgrad filtern</h2>
+    <a href="{{ url_for('list_recipes', difficulty='easy') }}"><button>Einfach</button></a>
+    <a href="{{ url_for('list_recipes', difficulty='medium') }}"><button>Mittel</button></a>
+    <a href="{{ url_for('list_recipes', difficulty='difficult') }}"><button>Schwierig</button></a>
+
+    <hr>
+
+    {% if current_user.is_authenticated %}
+        <p>Hallo, {{ current_user.username }}!</p>
+        <p>Schön, dich wiederzusehen.</p>
+        <a href="{{ url_for('dashboard') }}">Mein Dashboard</a>
+        <br>
+        <a href="{{ url_for('logout') }}">Abmelden</a>
+    {% else %}
+        <p>Bitte melden Sie sich an, um die Anwendung zu nutzen.</p>
+        <a href="{{ url_for('login') }}">Anmelden</a>
+        <br>
+        <a href="{{ url_for('register') }}">Registrieren</a>
+    {% endif %}
+
+    <hr>
+    <h2>Entdecken Sie unsere Rezepte</h2>
+    <a href="{{ url_for('list_recipes') }}">Alle Rezepte anzeigen</a>
+</body>
+</html>

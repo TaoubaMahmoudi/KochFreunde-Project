@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mein Profil</title>
+</head>
+<body>
+    <h1>Profil von {{ user.username }}</h1>
+
+    {% set image_file = url_for('static', filename='profile_pics/' + user.profile_picture) %}
+    <img src="{{ image_file }}" alt="Profilbild von {{ user.username }}">
+    <br>
+    <a href="{{ url_for('update_profile') }}">Profil bearbeiten</a>
+
+    <hr>
+    <h2>Von {{ user.username }} veröffentlichte Rezepte</h2>
+    
+    {% if recipes %}
+        <ul>
+            {% for recipe in recipes %}
+                <li>
+                    <h3><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a></h3>
+                    <p>{{ recipe.content }}</p>
+                    <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sie haben noch keine Rezepte veröffentlicht.</p>
+    {% endif %}
+    <br>
+    <h2>Meine Lieblingsrezepte</h2>
+    {% if user_favorites %}
+        <ul>
+            {% for recipe in user_favorites %}
+                <li><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sie haben noch keine Lieblingsrezepte.</p>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}">Zurück zum Dashboard</a>
+</body>
+</html>

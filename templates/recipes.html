@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rezeptliste</title>
+</head>
+<body>
+    <h1>Alle Rezepte</h1>
+    
+    <form action="{{ url_for('list_recipes') }}" method="GET">
+        <input type="text" name="query" placeholder="Ein Rezept suchen...">
+        <button type="submit">Suchen</button>
+    </form>
+    
+    <hr>
+    
+    {% if recipes %}
+        <ul>
+            {% for recipe in recipes %}
+                <li>
+                    <h2><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a></h2>
+                    <p>{{ recipe.content }}</p>
+                    <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }} von <a href="{{ url_for('profile', user_id=recipe.author.id) }}">{{ recipe.author.username }}</a></small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Es gibt keine Rezepte, die Ihrer Suche entsprechen.</p>
+    {% endif %}
+</body>
+</html>

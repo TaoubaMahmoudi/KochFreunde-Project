@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neues Rezept hinzufügen</title>
+</head>
+<body>
+    <h1>Neues Rezept hinzufügen</h1>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        
+        <div>
+            {{ form.title.label }}<br>
+            {{ form.title(size=32) }}
+        </div>
+        
+        <div>
+            {{ form.content.label }}<br>
+            {{ form.content }}
+        </div>
+        
+        <div>
+            {{ form.category.label }}<br>
+            {{ form.category }}
+        </div>
+        
+        <div>
+            {{ form.difficulty.label }}<br>
+            {{ form.difficulty }}
+        </div>
+
+        <div>
+            {{ form.picture.label }}<br>
+            {{ form.picture }}
+        </div>
+        
+        <div>
+            {{ form.submit }}
+        </div>
+    </form>
+</body>
+</html>

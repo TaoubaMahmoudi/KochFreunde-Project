@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Willkommen auf Ihrem Dashboard, {{ current_user.username }}!</h1>
+    <p>Sie sind jetzt angemeldet.</p>
+    <a href="{{ url_for('logout') }}">Abmelden</a>
+    <br>
+    <a href="{{ url_for('add_recipe') }}">Neues Rezept hinzufügen</a>
+    <br>
+    <a href="{{ url_for('list_recipes') }}">Alle Rezepte anzeigen</a>
+    <br>
+    <a href="{{ url_for('profile', user_id=current_user.id) }}">Mein Profil</a>
+</body>
+</html>

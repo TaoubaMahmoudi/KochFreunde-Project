@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ recipe.title }}</title>
+</head>
+<body>
+    <h1>{{ recipe.title }}</h1>
+    <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }} von {{ recipe.author.email }}</small>
+    <hr>
+    <h3>Zutaten & Anleitungen</h3>
+    <p>{{ recipe.content }}</p>
+    <hr>
+    {% if recipe.author == current_user %}
+    <div>
+        <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning">Bearbeiten</a>
+        <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Möchten Sie dieses Rezept wirklich löschen?');">Löschen</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% set recipe_image = url_for('static', filename='recipe_pics/' + recipe.image_file) %}
+    <img src="{{ recipe_image }}" alt="Foto des Rezepts {{ recipe.title }}" style="max-width: 100%; height: auto;"> 
+
+    <h3>Kommentare</h3>
+    {% if current_user.is_authenticated %}
+        <h4>Einen Kommentar hinzufügen</h4>
+        <form action="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" method="POST">
+            <textarea name="comment_content" rows="4" cols="50" placeholder="Schreiben Sie hier Ihren Kommentar..." required></textarea><br>
+            <button type="submit">Kommentar posten</button>
+        </form>
+    {% else %}
+        <p>Sie müssen angemeldet sein, um einen Kommentar zu hinterlassen. <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
+    {% endif %}
+    <hr>
+
+    {% for comment in recipe.comments %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <p>{{ comment.content }}</p>
+            <small>Von {{ comment.author.username }} am {{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
+        </div>
+    {% endfor %}
+
+    <hr>
+    <h3>Dieses Rezept bewerten</h3>
+    {% if current_user.is_authenticated %}
+        <form action="{{ url_for('rate_recipe', recipe_id=recipe.id) }}" method="POST">
+            <label for="score">Ihre Bewertung (1-5):</label>
+            <select name="score" id="score" required>
+                <option value="1">1 Stern</option>
+                <option value="2">2 Sterne</option>
+                <option value="3">3 Sterne</option>
+                <option value="4">4 Sterne</option>
+                <option value="5">5 Sterne</option>
+            </select>
+            <button type="submit">Bewerten</button>
+        </form>
+    {% else %}
+        <p>Sie müssen angemeldet sein, um dieses Rezept zu bewerten. <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
+    {% endif %}
+    <hr>
+
+    <h3>Durchschnittliche Bewertung: 
+    {% if recipe.ratings %}
+        {{ "%.1f" | format(recipe.average_rating) }} / 5
+    {% else %}
+        Noch nicht bewertet.
+    {% endif %}
+    </h3>
+
+    <hr>
+    {% if current_user.is_authenticated %}
+        {% if recipe in current_user.favorites_recipes %}
+            <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                <button>Von Favoriten entfernen</button>
+            </a>
+        {% else %}
+            <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                <button>Zu Favoriten hinzufügen</button>
+            </a>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for('list_recipes') }}">Zurück zur Rezeptliste</a>
+</body>
+</html>
