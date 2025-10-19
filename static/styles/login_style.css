@@ -1,0 +1,63 @@
+
+.login-wrapper {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.login-wrapper h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+.login-wrapper div {
+    margin-bottom: 15px;
+}
+.login-wrapper label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 400;
+    color: #555;
+}
+.login-wrapper input[type="email"],
+.login-wrapper input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; 
+}
+.login-wrapper button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffc107;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+.login-wrapper button[type="submit"]:hover {
+    background-color: #be772d;
+}
+
+/* Registrierung */
+.login-wrapper p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-wrapper p a {
+    color: #be772d;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-wrapper p a:hover {
+    text-decoration: underline;
+}

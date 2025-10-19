@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Neues Rezept hinzufügen</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Neues Rezept hinzufügen KochFreunde{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/add_recipe_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="recipe-form-wrapper">
     <h1>Neues Rezept hinzufügen</h1>
+    
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         
@@ -13,29 +18,34 @@
             {{ form.title(size=32) }}
         </div>
         
-        <div>
-            {{ form.content.label }}<br>
-            {{ form.content }}
+       <div>
+            {{ form.ingredients.label }}<br>
+            {{ form.ingredients() }} 
         </div>
-        
+  
+        <div>
+            {{ form.instructions.label }}<br>
+            {{ form.instructions() }} 
+        </div>
+
         <div>
             {{ form.category.label }}<br>
-            {{ form.category }}
+            {{ form.category() }}
         </div>
         
         <div>
             {{ form.difficulty.label }}<br>
-            {{ form.difficulty }}
+            {{ form.difficulty() }}
         </div>
 
         <div>
             {{ form.picture.label }}<br>
-            {{ form.picture }}
+            {{ form.picture() }}
         </div>
         
         <div>
-            {{ form.submit }}
+            {{ form.submit() }}
         </div>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

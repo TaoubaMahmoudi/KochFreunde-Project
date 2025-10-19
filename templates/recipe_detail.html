@@ -1,86 +1,236 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ recipe.title }}</title>
-</head>
-<body>
-    <h1>{{ recipe.title }}</h1>
-    <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }} von {{ recipe.author.email }}</small>
-    <hr>
-    <h3>Zutaten & Anleitungen</h3>
-    <p>{{ recipe.content }}</p>
-    <hr>
-    {% if recipe.author == current_user %}
-    <div>
-        <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning">Bearbeiten</a>
-        <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Möchten Sie dieses Rezept wirklich löschen?');">Löschen</button>
-        </form>
-    </div>
-    {% endif %}
+{% extends "base.html" %}
 
-    {% set recipe_image = url_for('static', filename='recipe_pics/' + recipe.image_file) %}
-    <img src="{{ recipe_image }}" alt="Foto des Rezepts {{ recipe.title }}" style="max-width: 100%; height: auto;"> 
+{% block title %}{{ recipe.title }} KochFreunde{% endblock %}
 
-    <h3>Kommentare</h3>
-    {% if current_user.is_authenticated %}
-        <h4>Einen Kommentar hinzufügen</h4>
-        <form action="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" method="POST">
-            <textarea name="comment_content" rows="4" cols="50" placeholder="Schreiben Sie hier Ihren Kommentar..." required></textarea><br>
-            <button type="submit">Kommentar posten</button>
-        </form>
-    {% else %}
-        <p>Sie müssen angemeldet sein, um einen Kommentar zu hinterlassen. <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
-    {% endif %}
-    <hr>
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/recipe_detail_style.css') }}">
+    
+{% endblock %}
 
-    {% for comment in recipe.comments %}
-        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <p>{{ comment.content }}</p>
-            <small>Von {{ comment.author.username }} am {{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
+{% block content %}
+
+    <div class="recipe-detail-container">
+    
+        <h1>{{ recipe.title }}</h1>
+        <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }} von {{ recipe.author.username }}</small>
+        
+        <div class="recipe-header-details">
+
+        <div class="recipe-info-summary">
+            {% set category_map = {
+                'savory': 'Herzhaft',
+                'sweet': 'Süß',
+                'vegetarien': 'Vegetarisch'
+            } %}
+            <p><strong>Ernährung:</strong> {{ category_map.get(recipe.category, recipe.category) }}</p>
+            {% set difficulty_map = {
+                'easy': 'Einfach',
+                'medium': 'Mittel',
+                'difficult': 'Schwierig'
+                } %}
+            <p><strong>Schwierigkeit:</strong> {{ difficulty_map.get(recipe.difficulty, recipe.difficulty) }}</p>
         </div>
-    {% endfor %}
 
-    <hr>
-    <h3>Dieses Rezept bewerten</h3>
-    {% if current_user.is_authenticated %}
-        <form action="{{ url_for('rate_recipe', recipe_id=recipe.id) }}" method="POST">
-            <label for="score">Ihre Bewertung (1-5):</label>
-            <select name="score" id="score" required>
-                <option value="1">1 Stern</option>
-                <option value="2">2 Sterne</option>
-                <option value="3">3 Sterne</option>
-                <option value="4">4 Sterne</option>
-                <option value="5">5 Sterne</option>
-            </select>
-            <button type="submit">Bewerten</button>
-        </form>
-    {% else %}
-        <p>Sie müssen angemeldet sein, um dieses Rezept zu bewerten. <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
-    {% endif %}
-    <hr>
+        <div class="average-rating-display">
+                {% if recipe.average_rating %}
+                    {% set avg_rating = recipe.average_rating %}
+                    <div class="star-rating">
+                        
+                        {% set full_stars = avg_rating | round(0, 'floor') | int %}
+                        
+                        {% set decimal = avg_rating - full_stars %}
+                        {% set has_half_star = decimal >= 0.25 and decimal < 0.75 %}
+                        
+                        {% set empty_stars = 5 - full_stars - (1 if has_half_star else 0) %}
 
-    <h3>Durchschnittliche Bewertung: 
-    {% if recipe.ratings %}
-        {{ "%.1f" | format(recipe.average_rating) }} / 5
-    {% else %}
-        Noch nicht bewertet.
-    {% endif %}
-    </h3>
+                        {% for i in range(full_stars) %}
+                            <i class="fas fa-star full"></i>
+                        {% endfor %}
 
-    <hr>
-    {% if current_user.is_authenticated %}
-        {% if recipe in current_user.favorites_recipes %}
-            <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
-                <button>Von Favoriten entfernen</button>
-            </a>
-        {% else %}
-            <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
-                <button>Zu Favoriten hinzufügen</button>
-            </a>
-        {% endif %}
-    {% endif %}
+                        {% if has_half_star %}
+                            <i class="fas fa-star-half-alt half"></i>
+                        {% endif %}
 
-    <a href="{{ url_for('list_recipes') }}">Zurück zur Rezeptliste</a>
-</body>
-</html>
+                        {% for i in range(empty_stars) %}
+                            <i class="far fa-star empty"></i>
+                        {% endfor %}
+                        
+                        <span class="rating-number">{{ "%.1f" | format(avg_rating) }} / 5</span>
+                    </div>
+                {% else %}
+                    <p>Noch nicht bewertet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+            <div class="recipe-main-image-wrapper"> 
+               {% set recipe_image = url_for('static', filename='recipe_pics/' + recipe.image_file) %}
+               <img src="{{ recipe_image }}" alt="Foto des Rezepts {{ recipe.title }}" class="recipe-main-image"> 
+            </div>
+    
+       <div class="recipe-main-content">
+            </div>
+            
+                <div class="recipe-content">
+                    <h3>Zutaten</h3>
+                    <div class="recipe-text-block">{{ recipe.ingredients | replace('\n', '<br>') | safe }}</div> 
+                </div>
+     
+
+                <div class="recipe-content">
+                    <h3>Zubereitung</h3>
+                    <div class="recipe-text-block">{{ recipe.instructions | replace('\n', '<br>') | safe }}</div> 
+                </div>    
+
+
+        {# SECTION ACTION (Bearbeiten / Löschen) #}
+        <div class="recipe-actions">
+            {% if recipe.author == current_user %}
+            <div>
+                <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning">Bearbeiten</a>
+                <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Möchten Sie dieses Rezept wirklich löschen?');">Löschen</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        {# SECTION FAVORIS #}
+        <div class="favorite-section">
+            {% if current_user.is_authenticated %}
+                {% if recipe in current_user.favorites_recipes %}
+                    <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                        <button>Von Favoriten entfernen</button>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                        <button>Zu Favoriten hinzufügen</button>
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+        
+        <div class="rating-section">
+            <h3>Dieses Rezept bewerten</h3>
+            {% if current_user.is_authenticated %}
+                {# user_rating est passé depuis app.py #}
+                <form action="{{ url_for('rate_recipe', recipe_id=recipe.id) }}" method="POST" id="ratingForm">
+                    <label for="score">Ihre Bewertung:</label>
+                    
+                    <div class="star-rating-input" data-current-rating="{{ user_rating }}">
+                        <i class="far fa-star rating-star" data-value="1"></i>
+                        <i class="far fa-star rating-star" data-value="2"></i>
+                        <i class="far fa-star rating-star" data-value="3"></i>
+                        <i class="far fa-star rating-star" data-value="4"></i>
+                        <i class="far fa-star rating-star" data-value="5"></i>
+                    </div>
+                    
+                    <input type="hidden" name="score" id="ratingScore" value="">
+                    
+                    <button type="submit" id="submitRatingBtn" disabled>Bewerten</button>
+                </form>
+            {% else %}
+                <p>Sie müssen angemeldet sein, um dieses Rezept zu bewerten. <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
+            {% endif %}
+            
+            <br>
+           
+
+        {# SECTION COMMENT #}
+        <div class="comment-section">
+            <h3>Kommentare</h3>
+            
+            {% for comment in recipe.comments %}
+                <div class="comment-item">
+                    <p>{{ comment.content }}</p>
+                    <small>Von {{ comment.author.username }} am {{ comment.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+            {% endfor %}
+
+            {% if current_user.is_authenticated %}
+                <h4>Einen Kommentar hinzufügen</h4>
+                <form action="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" method="POST" class="comment-form">
+                    <textarea name="comment_content" rows="4" placeholder="Schreiben Sie hier Ihren Kommentar..." required></textarea><br>
+                    <button type="submit">Kommentar posten</button>
+                </form>
+            {% else %}
+                <p>Sie müssen angemeldet sein, um einen Kommentar zu hinterlassen. <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
+            {% endif %}
+        </div>
+
+        <div class="return-link-container">
+             <a href="{{ url_for('list_recipes') }}">Zurück zur Rezeptliste</a>
+        </div>
+    </div>
+
+    {% block tail_extra %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const starContainer = document.querySelector('.star-rating-input');
+        if (!starContainer) return; // Quitter si l'utilisateur n'est pas connecté ou si le conteneur n'existe pas
+
+        const stars = starContainer.querySelectorAll('.rating-star');
+        const scoreInput = document.getElementById('ratingScore');
+        const submitBtn = document.getElementById('submitRatingBtn');
+        
+        const initialRatingAttr = starContainer.getAttribute('data-current-rating');
+        const initialRating = parseInt(initialRatingAttr) || 0;
+
+        let selectedRating = initialRating;
+
+        function updateStars(rating) {
+            stars.forEach(star => {
+                const starValue = parseInt(star.getAttribute('data-value'));
+                if (starValue <= rating) {
+                    star.classList.remove('far'); 
+                    star.classList.add('fas'); 
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+        
+        if (initialRating > 0) {
+            scoreInput.value = initialRating;
+            updateStars(initialRating);
+            submitBtn.disabled = false;
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const hoverValue = parseInt(this.getAttribute('data-value'));
+                stars.forEach(s => {
+                    const sValue = parseInt(s.getAttribute('data-value'));
+                    if (sValue <= hoverValue) {
+                        s.classList.add('hovered');
+                    } else {
+                        s.classList.remove('hovered');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseout', function() {
+                stars.forEach(s => s.classList.remove('hovered'));
+                updateStars(selectedRating);
+            });
+        });
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.getAttribute('data-value'));
+                
+                scoreInput.value = selectedRating;
+                submitBtn.disabled = false;
+                
+                updateStars(selectedRating);
+                
+                stars.forEach(s => s.classList.remove('hovered'));
+            });
+        });
+        
+        updateStars(selectedRating);
+    });
+</script>
+{% endblock %}
+{% endblock %}

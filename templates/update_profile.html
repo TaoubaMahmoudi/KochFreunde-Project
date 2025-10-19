@@ -1,28 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Profil aktualisieren</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Profil aktualisieren KochFreunde{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/update_profile_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-update-wrapper">
+    
     <h1>Profil aktualisieren</h1>
 
     <img src="{{ image_file }}" alt="Profilbild von {{ current_user.username }}">
 
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
+        
         <div>
             {{ form.username.label }}<br>
             {{ form.username(size=20) }}
         </div>
+        
         <div>
             {{ form.picture.label }}<br>
             {{ form.picture }}
         </div>
+        
         <div>
             {{ form.submit }}
         </div>
     </form>
     
-    <a href="{{ url_for('profile') }}">Zurück zum Profil</a>
-</body>
-</html>
+    <div class="return-link-container-profile">
+          <a href="{{ url_for('profile') }}" class="back-link">Zurück zum Profil</a>
+    </div>
+</div>
+{% endblock %}

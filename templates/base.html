@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KochFreunde{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/base_style.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <ul class="nav-links nav-left">
+            <li><a href="{{ url_for('home') }}">Startseite</a></li>
+            
+            <li class="dropdown-menu-item">
+                <a href="#" class="dropdown-toggle">Ernährung <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('list_recipes', category='savory') }}">Herzhaft</a>
+                    <a href="{{ url_for('list_recipes', category='sweet') }}">Süß</a>
+                    <a href="{{ url_for('list_recipes', category='vegetarian') }}">Vegetarisch</a> 
+                </div>
+            </li>
+            
+            <li class="dropdown-menu-item">
+                <a href="#" class="dropdown-toggle">Schwierigkeit <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('list_recipes', difficulty='easy') }}">Einfach</a>
+                    <a href="{{ url_for('list_recipes', difficulty='medium') }}">Mittel</a>
+                    <a href="{{ url_for('list_recipes', difficulty='difficult') }}">Schwierig</a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="nav-right">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <form action="{{ url_for('list_recipes') }}" method="GET" class="search-form">
+                    <input type="text" name="query" placeholder="Suchen...">
+                </form>
+            </div>
+
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="login-btn">Profil</a>
+            {% else %}
+                 <a href="{{ url_for('login') }}" class="login-btn">Login</a> 
+            {% endif %}
+        </div>
+    </nav>
+</header>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+{% block scripts %}{% endblock %}
+
+<a href="{{ url_for('ai_recipe_search') }}" 
+   class="fab-ai-search" 
+   title="Was koche ich heute?"> 
+   
+    <i class="fas fa-magic"></i> 
+    <span class="button-text">KI Rezepte</span>
+</a>
+
+</body>
+</html>

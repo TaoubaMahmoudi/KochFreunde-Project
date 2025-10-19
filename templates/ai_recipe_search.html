@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+{% endblock %}
+
+{% block title %}Was koche ich heute?{% endblock %}
+
+{% block content %}
+<div class="recipe-detail-container" style="
+    max-width: 900px;
+    margin: 30px auto; 
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+">
+
+    <h1 style="color: #be772d; font-size: 36px; margin-bottom: 5px; text-align: center !important;">
+    Was koche ich heute? 
+</h1>
+    <p class="ai-description" style="display: block; color: #555; font-size: 18px; margin-bottom: 40px; text-align: center; font-weight: 500;">
+        Geben Sie die Zutaten ein, die Sie zu Hause haben (getrennt durch ein Komma). 
+        Die KI schlägt passende Rezepte vor!
+    </p>
+    
+   <div class="ai-search-section" style="
+        width: 100%; 
+        max-width: 700px; 
+        margin: 0 auto 20px auto; 
+        /* RETIRE : padding: 20px; border: 1px solid #eee; border-radius: 4px; */
+        text-align: center;
+    "> 
+    
+    <h4>Meine Zutaten hinzufügen</h4> 
+    
+    <form method="GET" action="{{ url_for('ai_recipe_search') }}" class="ai-search-form" style="width: 100%; max-width: 500px; margin: 0 auto; text-align: center;">
+        
+        <textarea 
+            id="ingredients" 
+            name="ingredients" 
+            rows="4" 
+            placeholder="Schreiben Sie hier Ihre Zutaten... (z.B.: Huhn, Reis, Tomate, Käse)" 
+            required
+            class="ai-ingredient-textarea"
+            style="
+                width: 100% !important; 
+                max-width: 100%; 
+                height: 150px; 
+                padding: 10px; 
+                border: 1px solid #ddd; 
+                border-radius: 4px; 
+                box-sizing: border-box; 
+                resize: vertical; 
+                font-size: 16px; 
+                text-align: left;
+            "
+        >{{ search_query if search_query }}</textarea>
+
+        <button 
+            type="submit" 
+            class="ai-search-button"
+            style="
+                padding: 10px 20px; 
+                border-radius: 5px; 
+                cursor: pointer; 
+                font-size: 16px; 
+                margin-top: 15px; 
+                background-color: #ffd26b; 
+                color: white; 
+                border: none; 
+                font-weight: 600; 
+                display: inline-block; 
+            "
+            onmouseover="this.style.backgroundColor='#dd9933'"
+            onmouseout="this.style.backgroundColor='#ffd26b'"
+        >
+            Rezepte finden
+        </button>
+    </form>
+</div>
+    
+{% if recipes %}
+    <h2 class="results-title" style="font-size: 24px; color: #333; margin-top: 20px; margin-bottom: 30px; border-bottom: none; padding-bottom: 5px; text-align: center;">
+        Gefundene Rezepte 
+    </h2>
+    
+    <div class="recipe-grid" style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        padding: 0;
+        margin-bottom: 50px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    ">
+        {% for recipe in recipes %}
+            <div class="card" 
+                style="
+                    border-radius: 8px;
+                    overflow: hidden;
+                    background-color: #fff; 
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s;
+                "
+                onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 6px 15px rgba(0, 0, 0, 0.15)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.1)'"
+            >
+                
+                {% set image_source = '' %}
+                {% if 'image_file' in recipe and recipe.image_file %}
+                    {% set image_source = url_for('static', filename='recipe_pics/' + recipe.image_file) %}
+                {% elif 'image' in recipe and recipe.image %}
+                    {% set image_source = recipe.image %}
+                {% else %}
+                    {% set image_source = url_for('static', filename='recipe_pics/default_recipe.jpg') %}
+                {% endif %}
+
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-image-link">
+                    <img src="{{ image_source }}" alt="Foto des Rezepts {{ recipe.title }}" style="
+                        width: 100%;
+                        height: 200px; 
+                        object-fit: cover; 
+                        display: block;
+                    ">
+                </a>
+                
+                <div class="recipe-info" style="
+                    background-color: #f7e6c4; 
+                    padding: 12px 10px;
+                    text-align: center;
+                ">
+                    <h3 class="recipe-card-title">
+                        <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-title-link" style="
+                            text-decoration: none;
+                            color: #333;
+                            font-weight: 600;
+                            font-size: 16px;
+                            display: block;
+                            transition: color 0.3s; /* IMPORTANT : Garder la transition ici */
+                        "
+                        onmouseover="this.style.color='#dd9933'"
+                        onmouseout="this.style.color='#333'"
+                        >
+                            {{ recipe.title }}
+                        </a>
+                    </h3>
+                    
+                    <p class="summary" style="font-size: 14px; margin-top: 5px;">
+                        <i class="fas fa-check-circle" style="color: green;"></i> <strong>Vorhandene Zutaten:</strong> {{ recipe.usedIngredientCount }}<br>
+                        <i class="fas fa-times-circle" style="color: red;"></i> <strong>Fehlende Zutaten:</strong> 
+                        <span class="missed">{{ recipe.missedIngredientCount }}</span>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% elif search_query and recipes is not none and recipes|length == 0 %}
+    <p class="no-results" style="text-align: center; padding: 50px;">
+        <i class="fas fa-exclamation-triangle"></i> Entschuldigung, es wurden keine Rezepte mit diesen Zutaten gefunden. 
+        Versuchen Sie es mit anderen!
+    </p>
+{% endif %}
+
+</div>
+{% endblock %}

@@ -1,43 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mein Profil</title>
-</head>
-<body>
-    <h1>Profil von {{ user.username }}</h1>
+{% extends "base.html" %}
 
-    {% set image_file = url_for('static', filename='profile_pics/' + user.profile_picture) %}
-    <img src="{{ image_file }}" alt="Profilbild von {{ user.username }}">
-    <br>
-    <a href="{{ url_for('update_profile') }}">Profil bearbeiten</a>
+{% block title %}Mein Profil KochFreunde{% endblock %}
 
-    <hr>
-    <h2>Von {{ user.username }} veröffentlichte Rezepte</h2>
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/profile_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main-content-wrapper">
+    <div class="profile-header">
+        {% set image_file = url_for('static', filename='profile_pics/' + user.profile_picture) %}
+        <img src="{{ image_file }}" alt="Profilbild von {{ user.username }}" class="profile-img">
+        
+        <h1> {{ user.username }}</h1>
+        
+        <a href="{{ url_for('update_profile') }}" class="btn-primary profile-edit-btn">Profil bearbeiten</a>
+    </div>
+
+    <div class="section-separator"></div> 
+
+    <h2> Meine Veröffentlichte Rezepte</h2>
     
     {% if recipes %}
-        <ul>
+        <div class="recipe-list-container published-recipes">
             {% for recipe in recipes %}
-                <li>
-                    <h3><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a></h3>
-                    <p>{{ recipe.content }}</p>
-                    <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }}</small>
-                </li>
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-list-item">
+                    
+                    {% set recipe_image_list = url_for('static', filename='recipe_pics/' + recipe.image_file) %}
+                    <img src="{{ recipe_image_list }}" alt="{{ recipe.title }}" class="list-item-img">
+                    
+                    <div class="list-item-info">
+                        <span class="recipe-title-link">{{ recipe.title }}</span>
+                        <span class="recipe-date">Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                </a>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>Sie haben noch keine Rezepte veröffentlicht.</p>
+        <p class="no-recipe-msg">Sie haben noch keine Rezepte veröffentlicht.</p>
     {% endif %}
-    <br>
+
     <h2>Meine Lieblingsrezepte</h2>
+    
     {% if user_favorites %}
-        <ul>
+        <div class="recipe-list-container favorite-recipes">
             {% for recipe in user_favorites %}
-                <li><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a></li>
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-list-item">
+                     {% set favorite_image = url_for('static', filename='recipe_pics/' + recipe.image_file) if recipe.image_file else url_for('static', filename='default.png') %}
+                    <img src="{{ favorite_image }}" alt="{{ recipe.title }}" class="list-item-img">
+                    
+                    <div class="list-item-info">
+                        <span class="recipe-title-link">{{ recipe.title }}</span>
+                        </div>
+                </a>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>Sie haben noch keine Lieblingsrezepte.</p>
+        <p class="no-recipe-msg">Sie haben noch keine Lieblingsrezepte.</p>
     {% endif %}
-    <a href="{{ url_for('dashboard') }}">Zurück zum Dashboard</a>
-</body>
-</html>
+    
+    <div class="return-link-container-profile">
+        <a href="{{ url_for('dashboard') }}">Zurück zum Dashboard</a>
+    </div>
+
+</div>
+{% endblock %}

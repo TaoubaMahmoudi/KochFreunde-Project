@@ -1,0 +1,99 @@
+
+.profile-update-wrapper {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center; 
+}
+
+.profile-update-wrapper h1 {
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 500;
+}
+
+/* Image profil */
+.profile-update-wrapper img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; 
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid #be772d; 
+    image-orientation: none;
+}
+
+/* Formulaire */
+.profile-update-wrapper form {
+    text-align: left; 
+    margin-top: 20px;
+}
+
+.profile-update-wrapper form > div {
+    margin-bottom: 15px;
+}
+
+.profile-update-wrapper label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+
+.profile-update-wrapper input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; 
+    font-size: 15px;
+}
+
+/*(picture) */
+.profile-update-wrapper input[type="file"] {
+    padding: 5px 0;
+}
+
+/* bouton soumission */
+.profile-update-wrapper input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffc107; 
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.profile-update-wrapper input[type="submit"]:hover {
+    background-color: #be772d;
+}
+
+/* Link retour */
+.return-link-container-profile {
+    text-align: center; 
+    margin-top: 40px; 
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.profile-update-wrapper .back-link {
+    display: inline-block;
+    margin-top: 0; 
+    color: #be772d;
+    text-decoration: none;
+    transition: text-decoration 0.2s;
+}
+
+.profile-update-wrapper .back-link:hover {
+    text-decoration: underline;
+}

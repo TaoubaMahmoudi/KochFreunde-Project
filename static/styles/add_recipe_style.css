@@ -1,0 +1,86 @@
+
+.recipe-form-wrapper {
+    max-width: 800px; 
+    margin: 30px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-form-wrapper h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.recipe-form-wrapper form > div {
+    margin-bottom: 20px;
+}
+
+.recipe-form-wrapper label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Styles texte (Title) */
+.recipe-form-wrapper input[type="text"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 15px;
+}
+
+/* Styles (Contenu) */
+.recipe-form-wrapper textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+/* Styles  (Schwierrigkeit, Ernährung) */
+.recipe-form-wrapper select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: #f9f9f9;
+}
+
+/*  bouton */
+.recipe-form-wrapper input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffd26b;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.recipe-form-wrapper input[type="submit"]:hover {
+    background-color: #dd9933;
+}
+
+/* Style(image) */
+.recipe-form-wrapper input[type="file"] {
+    padding: 5px 0;
+}

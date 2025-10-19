@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Test Favoris</title>
+</head>
+<body>
+    <h1>Test des Favoris Isolés</h1>
+    
+    {% if mes_favoris %} 
+        <p>Nombre de favoris : {{ mes_favoris|length }}</p>
+        <ul>
+            {% for r in mes_favoris %}
+                <li>TITRE RÉCUPÉRÉ : {{ r['title'] }}</li>
+                <li>ID RÉCUPÉRÉ : {{ r['id'] }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Liste vide.</p>
+    {% endif %}
+</body>
+</html>

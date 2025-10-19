@@ -1,30 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Rezeptliste</title>
-</head>
-<body>
-    <h1>Alle Rezepte</h1>
+{% extends "base.html" %}
+
+{% block title %}Alle Rezepte  KochFreunde{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/recipes_style.css') }}">
+{% endblock %}
+
+{% block content %}
     
-    <form action="{{ url_for('list_recipes') }}" method="GET">
-        <input type="text" name="query" placeholder="Ein Rezept suchen...">
-        <button type="submit">Suchen</button>
-    </form>
-    
-    <hr>
-    
-    {% if recipes %}
-        <ul>
+    <section class="recipe-list-section">
+        <h2>Alle Rezepte</h2>
+
+        {% if recipes %}
+           {% if recipes | length == 1 %}
+               <div class="recipe-grid single-recipe-grid">
+           {% else %}
+               <div class="recipe-grid">
+           {% endif %}     
+
             {% for recipe in recipes %}
-                <li>
-                    <h2><a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">{{ recipe.title }}</a></h2>
-                    <p>{{ recipe.content }}</p>
-                    <small>Veröffentlicht am: {{ recipe.date_posted.strftime('%Y-%m-%d') }} von <a href="{{ url_for('profile', user_id=recipe.author.id) }}">{{ recipe.author.username }}</a></small>
-                </li>
+                <div class="card">
+                    
+                    <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-image-link">
+                        {% set recipe_image = url_for('static', filename='recipe_pics/' + recipe.image_file) %}
+                        <img src="{{ recipe_image }}" alt="Foto des Rezepts {{ recipe.title }}">
+                    </a>
+                    
+                    <div class="recipe-info">
+                        <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="recipe-title-link">
+                            {{ recipe.title }}
+                        </a>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p>Es gibt keine Rezepte, die Ihrer Suche entsprechen.</p>
-    {% endif %}
-</body>
-</html>
+            </div>
+            
+            {% else %}
+           <p style="text-align: center; padding: 50px;">Es gibt keine Rezepte, die Ihrer Suche oder Ihren Filtern entsprechen.</p>
+        {% endif %}
+    </section>
+
+{% endblock %}

@@ -7,9 +7,11 @@ from flask_wtf.file import FileField, FileAllowed
 
 class RecipeForm(FlaskForm):
     title = StringField('Titel', validators=[DataRequired()])
-    content = TextAreaField('Inhalt  (Zutaten und Anweisungen)', validators=[DataRequired()])
-    category = SelectField('Kategorie', choices=[('savory', 'Herzhaft'), ('sweet', 'Süß'), ('vegetarien', 'Vegetarisch')], validators=[DataRequired()])    
-    difficulty = SelectField('Schwierigkeitsgrad', choices=[('easy', 'Einfach'), ('medium', 'Mittel'), ('difficult', 'Schwierig')], validators=[DataRequired()])
+    ingredients = TextAreaField('Zutaten', validators=[DataRequired()])
+    instructions = TextAreaField('Anweisungen', validators=[DataRequired()])
+  #  content = TextAreaField('Inhalt  (Zutaten und Anweisungen)', validators=[DataRequired()])
+    category = SelectField('Ernährung', choices=[('savory', 'Herzhaft'), ('sweet', 'Süß'), ('vegetarien', 'Vegetarisch')], validators=[DataRequired()])    
+    difficulty = SelectField('Schwierigkeit', choices=[('easy', 'Einfach'), ('medium', 'Mittel'), ('difficult', 'Schwierig')], validators=[DataRequired()])
     picture = FileField('Rezeptfoto', validators=[FileAllowed(['jpg', 'png', 'jpeg'])]) 
     submit = SubmitField('Rezept veröffentlichen')
 

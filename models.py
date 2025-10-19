@@ -19,14 +19,15 @@ class User(db.Model, UserMixin):
     profile_picture = db.Column(db.String(20), nullable=False, default='default.jpg')
     # Relationship with the Recipe table
     recipes = db.relationship('Recipe', backref='author', lazy=True)
-    favorites_recipes = db.relationship('Recipe', secondary=favorites, lazy='subquery',
+    favorites_recipes = db.relationship('Recipe', secondary=favorites, lazy='dynamic',
         backref=db.backref('users_favorited', lazy=True))
 
 # Model for recipes
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False) 
+    ingredients = db.Column(db.Text, nullable=False) 
+    instructions = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category = db.Column(db.String(50), nullable=True) # Ex: "sweet", "savory", "vegetarian"

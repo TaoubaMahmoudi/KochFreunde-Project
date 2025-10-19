@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% endblock %}
+
+{% block title %}KI-Rezept: {{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="recipe-detail-container" style="
+    max-width: 900px;
+    margin: 30px auto; 
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+">
+
+    <h1 style="color: #333; font-size: 36px; margin-bottom: 5px; text-align: center;">
+        {{ recipe.title }} 
+    </h1>
+    
+    <small style="display: block; color: #777; margin-bottom: 20px; text-align: center;">
+        KI-Vorschlag (Spoonacular)
+    </small>
+
+    <div class="recipe-header-details" style="
+        display: flex;
+        justify-content: space-between; 
+        align-items: center; 
+        margin: 0 auto 30px auto; 
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    ">
+        
+        <div class="recipe-info-summary" style="margin: 0; padding: 0;">
+            <p style="margin: 3px 0; font-size: 16px; color: #555;">
+                <strong style="color: #333; font-weight: 600;">Quelle:</strong> Spoonacular API
+            </p>
+            
+            {% if recipe.sourceUrl %}
+                <p style="margin: 3px 0; font-size: 16px; color: #555;">
+                    <i class="fa fa-external-link-alt"></i> <strong style="color: #333; font-weight: 600;">Originalquelle:</strong> <a href="{{ recipe.sourceUrl }}" target="_blank" style="color: #be772d; text-decoration: none;">Rezept auf Original-Website ansehen</a>
+                </p>
+            {% endif %}
+        </div>
+        
+        {# --- Rating --- #}
+        {% if recipe.spoonacularScore and recipe.spoonacularScore > 0 %}
+            {% set score = (recipe.spoonacularScore / 20) | round(1) %}
+            <div class="average-rating-display">
+                <div class="star-rating" style="display: flex; align-items: center; font-size: 24px; white-space: nowrap;">
+                    {% set full_stars = score | round(0, 'floor') | int %}
+                    {% set empty_stars = 5 - full_stars %}
+                    
+                    {% for i in range(full_stars) %}
+                        <i class="fas fa-star" style="color: #ffc107; margin-right: 3px;"></i>
+                    {% endfor %}
+                    
+                    {% for i in range(empty_stars) %}
+                        <i class="far fa-star" style="color: #ccc; margin-right: 3px;"></i>
+                    {% endfor %}
+                    
+                    <span class="rating-number" style="font-size: 18px; font-weight: 600; color: #333; margin-left: 15px;">
+                        {{ "%.1f" | format(score) }} / 5
+                    </span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {# ---  Image --- #}
+    <div class="recipe-main-image-wrapper" style="margin-bottom: 40px; text-align: center;">
+        <img src="{{ recipe.image }}" class="recipe-main-image" alt="Bild für {{ recipe.title }}" style="
+            width: 100%;
+            max-width: 900px; 
+            max-height: 500px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        ">
+    </div>
+    
+    {# Zutaten & Zubereitung #}
+    <div class="row">
+        
+        {# --- zutaten --- #}
+        <div class="col-md-6 mb-4">
+            <div class="recipe-content">
+                <h3 style="color: #dd9933; font-size: 22px; margin-bottom: 15px;">Zutaten</h3>
+                
+                <div class="recipe-text-block" style="line-height: 1.7; font-size: 16px;">
+                    {% for ingredient in recipe.extendedIngredients %}
+                        {{ ingredient.original }}<br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        {# --- (Zubereitung) --- #}
+        <div class="col-md-6 mb-4">
+            <div class="recipe-content">
+                <h3 style="color: #dd9933; font-size: 22px; margin-bottom: 15px;">Zubereitung</h3>
+ 
+                <div class="instructions-text mt-4">
+                    
+                    {% if recipe.instructions %}
+                        <div class="recipe-text-block" style="line-height: 1.7; font-size: 16px;">
+                            {{ recipe.instructions | safe }}
+                        </div>
+                    {% else %}
+                        <p class="text-danger" style="color: #dc3545;">Detaillierte Anweisungen sind nicht direkt über die API verfügbar. Bitte folgen Sie dem Link zur Originalquelle oben.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="return-link-container" style="text-align: center; margin-top: 40px; margin-bottom: 10px; font-size: 18px; font-weight: 500;">
+        <a href="{{ url_for('ai_recipe_search') }}" class="btn btn-secondary" style="color: #be772d; text-decoration: none;">
+            Zurück zur KI-Suche
+        </a>
+    </div>
+
+</div>
+{% endblock %}
