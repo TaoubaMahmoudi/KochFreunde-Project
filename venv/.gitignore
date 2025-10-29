@@ -1,0 +1,12 @@
+# Fichiers cache Python
+__pycache__/
+*.pyc
+
+# Fichiers de dépendances et d'environnement virtuel
+venv/
+env/
+.env
+
+# Fichiers temporaires ou spécifiques à l'OS
+.DS_Store
+*.swp
